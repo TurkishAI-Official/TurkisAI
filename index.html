@@ -1,119 +1,249 @@
 
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TurkishAI</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #101827;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .app {
-      width: 100%;
-      max-width: 700px;
-      background: #1b2940;
-      border-radius: 20px;
-      padding: 28px;
-      box-shadow: 0 15px 50px #0005;
-    }
-    h1 { color: #62d6c5; margin-bottom: 8px; }
-    .subtitle { color: #aab8cc; }
-    #chat {
-      height: 330px;
-      overflow-y: auto;
-      margin: 24px 0;
-      padding: 14px;
-      background: #111c2d;
-      border-radius: 12px;
-    }
-    .message {
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      background: #293b55;
-      line-height: 1.5;
-      white-space: pre-wrap;
-    }
-    .user { background: #126b68; }
-    .controls { display: flex; gap: 10px; }
-    input {
-      flex: 1;
-      min-width: 0;
-      padding: 14px;
-      border: 0;
-      border-radius: 10px;
-      background: #edf2f7;
-      font-size: 16px;
-    }
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 14px 20px;
-      background: #62d6c5;
-      color: #10202a;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover { background: #8ce9dc; }
-    .note { color: #9eacc0; font-size: 12px; margin-top: 16px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurkishAI</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+}
+
+header {
+  padding: 20px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #29364a;
+}
+
+.logo {
+  color: #62d6c5;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+select, button, input {
+  border: none;
+  border-radius: 9px;
+  padding: 12px;
+}
+
+select {
+  background: #26364c;
+  color: white;
+}
+
+main {
+  max-width: 850px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 34px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #aab8cc;
+}
+
+#chat {
+  height: 400px;
+  overflow-y: auto;
+  background: #1b2940;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 30px;
+}
+
+.message {
+  background: #293b55;
+  padding: 14px;
+  border-radius: 12px;
+  margin: 12px 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.user {
+  background: #126b68;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+}
+
+button {
+  background: #62d6c5;
+  color: #10202a;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.new-chat {
+  background: #293b55;
+  color: white;
+}
+
+footer {
+  text-align: center;
+  color: #8190a5;
+  font-size: 12px;
+  margin-top: 25px;
+}
+
+@media(max-width: 600px) {
+  header {
+    padding: 15px;
+  }
+
+  main {
+    margin: 20px auto;
+  }
+
+  .controls {
+    flex-wrap: wrap;
+  }
+
+  .controls input {
+    width: 100%;
+    flex-basis: 100%;
+  }
+}
+</style>
 </head>
+
 <body>
-  <main class="app">
-    <h1>TurkishAI</h1>
-    <div class="subtitle">Yeni nesil yapay zekâ asistanın.</div>
 
-    <div id="chat">
-      <div class="message">
-        Merhaba! Ben TurkishAI. Sana nasıl yardımcı olabilirim?
-      </div>
+<header>
+  <div class="logo">TurkishAI</div>
+
+  <div>
+    <select id="language" onchange="changeLanguage()">
+      <option value="tr">Türkçe</option>
+      <option value="en">English</option>
+    </select>
+
+    <button class="new-chat" onclick="newChat()" id="newChat">
+      Yeni Sohbet
+    </button>
+  </div>
+</header>
+
+<main>
+  <h1 id="title">Nasıl yardımcı olabilirim?</h1>
+
+  <p class="subtitle" id="subtitle">
+    TurkishAI ile fikirlerini keşfet.
+  </p>
+
+  <div id="chat">
+    <div class="message" id="welcome">
+      Merhaba! TurkishAI'ye hoş geldin.
     </div>
+  </div>
 
-    <div class="controls">
-      <input id="question" placeholder="Bir şey sor..." />
-      <button onclick="sendMessage()">Gönder</button>
-    </div>
+  <div class="controls">
+    <input
+      id="question"
+      placeholder="Bir mesaj yaz..."
+      onkeydown="if(event.key==='Enter') sendMessage()"
+    >
 
-    <div class="note">
-      TurkishAI ön sürümüdür. Henüz gerçek yapay zekâ bağlantısı yoktur.
-    </div>
-  </main>
+    <button onclick="sendMessage()" id="send">
+      Gönder
+    </button>
+  </div>
 
-  <script>
-    function sendMessage() {
-      const input = document.getElementById("question");
-      const chat = document.getElementById("chat");
-      const question = input.value.trim();
+  <footer>
+    TurkishAI © 2026
+  </footer>
+</main>
 
-      if (!question) return;
+<script>
+let language = "tr";
 
-      const message = document.createElement("div");
-      message.className = "message user";
-      message.textContent = question;
-      chat.appendChild(message);
+function sendMessage() {
+  const input = document.getElementById("question");
+  const chat = document.getElementById("chat");
+  const value = input.value.trim();
 
-      const reply = document.createElement("div");
-      reply.className = "message";
-      reply.textContent = "Mesajını aldım! Gerçek yapay zekâ bağlantısını bir sonraki aşamada ekleyeceğiz.";
-      chat.appendChild(reply);
+  if (!value) return;
 
-      input.value = "";
-      chat.scrollTop = chat.scrollHeight;
-    }
+  const userMessage = document.createElement("div");
+  userMessage.className = "message user";
+  userMessage.textContent = value;
+  chat.appendChild(userMessage);
 
-    document.getElementById("question").addEventListener("keydown", function(event) {
-      if (event.key === "Enter") sendMessage();
-    });
-  </script>
+  const reply = document.createElement("div");
+  reply.className = "message";
+
+  reply.textContent = language === "tr"
+    ? "Mesajını aldım! Gerçek yapay zekâ bağlantısını yakında ekleyeceğiz."
+    : "I received your message! We will add the real AI connection soon.";
+
+  chat.appendChild(reply);
+
+  input.value = "";
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function newChat() {
+  const chat = document.getElementById("chat");
+
+  chat.innerHTML = "";
+
+  const welcome = document.createElement("div");
+  welcome.className = "message";
+  welcome.textContent = language === "tr"
+    ? "Yeni sohbet başladı. Sana nasıl yardımcı olabilirim?"
+    : "A new chat has started. How can I help you?";
+
+  chat.appendChild(welcome);
+}
+
+function changeLanguage() {
+  language = document.getElementById("language").value;
+
+  document.getElementById("title").textContent =
+    language === "tr" ? "Nasıl yardımcı olabilirim?" : "How can I help you?";
+
+  document.getElementById("subtitle").textContent =
+    language === "tr" ? "TurkishAI ile fikirlerini keşfet." : "Explore your ideas with TurkishAI.";
+
+  document.getElementById("question").placeholder =
+    language === "tr" ? "Bir mesaj yaz..." : "Write a message...";
+
+  document.getElementById("send").textContent =
+    language === "tr" ? "Gönder" : "Send";
+
+  document.getElementById("newChat").textContent =
+    language === "tr" ? "Yeni Sohbet" : "New Chat";
+
+  newChat();
+}
+</script>
+
 </body>
 </html>
